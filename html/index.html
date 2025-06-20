@@ -1,1 +1,225 @@
-<h1>Welcome to Index</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2025 Goal Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #0f172a;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: #38bdf8;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    .box {
+      flex: 1 1 48%;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      min-height: 450px;
+    }
+
+    .goal {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .goal input[type="checkbox"] {
+      transform: scale(1.4);
+      margin-right: 12px;
+    }
+
+    .goal label {
+      font-size: 1.1rem;
+    }
+
+    .todo-section input[type="text"] {
+      width: 65%;
+      padding: 10px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .todo-section button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #0f172a;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    ul#todo-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    ul#todo-list li {
+      background: #eef3f9;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    ul#todo-list li button {
+      background-color: crimson;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #0f172a;
+      color: #ccc;
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .box {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎯 2025 Goal Tracker</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Left: Yearly Goals -->
+    <div class="box">
+      <h2>Yearly Goals</h2>
+      <div class="goal"><input type="checkbox" id="goal1"><label for="goal1">Code 30 minutes daily</label></div>
+      <div class="goal"><input type="checkbox" id="goal2"><label for="goal2">Drink 3 liters of water</label></div>
+      <div class="goal"><input type="checkbox" id="goal3"><label for="goal3">Read 1 technical article per day</label></div>
+      <div class="goal"><input type="checkbox" id="goal4"><label for="goal4">Build 1 new project every month</label></div>
+      <div class="goal"><input type="checkbox" id="goal5"><label for="goal5">Share 12 posts on LinkedIn</label></div>
+    </div>
+
+    <!-- Right: To-Do List -->
+    <div class="box">
+      <h2>To-Do List</h2>
+      <div class="todo-section">
+        <input type="text" id="new-task" placeholder="Add new task...">
+        <button onclick="addTask()">Add</button>
+        <ul id="todo-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Nurgül Yalman – One step closer to your goals 🚀
+  </footer>
+
+  <script>
+    const goals = ["goal1", "goal2", "goal3", "goal4", "goal5"];
+    goals.forEach(id => {
+      const checkbox = document.getElementById(id);
+      checkbox.checked = localStorage.getItem(id) === "true";
+      checkbox.addEventListener("change", () => {
+        localStorage.setItem(id, checkbox.checked);
+      });
+    });
+
+    const list = document.getElementById("todo-list");
+    const input = document.getElementById("new-task");
+
+    function renderTasks() {
+      list.innerHTML = "";
+      const tasks = JSON.parse(localStorage.getItem("todos") || "[]");
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${task} <button onclick="removeTask(${index})">Delete</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const val = input.value.trim();
+      if (!val) return;
+      const tasks = JSON.parse(localStorage.getItem("todos") || "[]");
+      tasks.push(val);
+      localStorage.setItem("todos", JSON.stringify(tasks));
+      input.value = "";
+      renderTasks();
+    }
+
+    function removeTask(index) {
+      const tasks = JSON.parse(localStorage.getItem("todos") || "[]");
+      tasks.splice(index, 1);
+      localStorage.setItem("todos", JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    renderTasks();
+  </script>
+
+</body>
+</html>
